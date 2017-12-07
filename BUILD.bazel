@@ -62,6 +62,16 @@ load(
 
 CONDITIONS = ["//conditions:default", ":android", ":iphonesdk"]
 
+EXTERNAL_DEPS = [
+  '@jpeg//:jpeg',
+  '@freetype//:freetype',
+  '@fontconfig//:fontconfig_lib',
+  '@sfntly//:sfntly',
+  '@sfntly//:chrome_subsetter',
+  '@libpng//:png',
+  '@webp//:webp',
+]
+
 cc_library(
     name = "opts_rest",
     srcs = select({
@@ -71,6 +81,24 @@ cc_library(
     copts = base_copts(CONDITIONS),
     defines = base_defines(CONDITIONS),
     includes = INCLUDES,
+)
+
+cc_library(
+    name = "codec_limited",
+    srcs = codec_srcs(True) + skia_all_hdrs(),
+    copts = base_copts(CONDITIONS),
+    defines = base_defines(CONDITIONS),
+    includes = INCLUDES,
+    deps = EXTERNAL_DEPS,
+)
+
+cc_library(
+    name = "codec_all",
+    srcs = codec_srcs(False) + skia_all_hdrs(),
+    copts = base_copts(CONDITIONS) + ["-fexceptions"],
+    defines = base_defines(CONDITIONS),
+    includes = INCLUDES,
+    deps = EXTERNAL_DEPS,
 )
 
 cc_library(
@@ -91,14 +119,8 @@ cc_library(
   ],
   deps = [
     ':shader_includes',
-    '@jpeg//:jpeg',
-    '@freetype//:freetype',
-    '@fontconfig//:fontconfig_lib',
-    '@sfntly//:sfntly',
-    '@sfntly//:chrome_subsetter',
-    '@libpng//:png',
-    '@webp//:webp',
-  ] + select({
+    ':codec_all',
+  ] + EXTERNAL_DEPS + select({
         ":k8": skia_opts_deps(SKIA_CPU_X86),
         "//conditions:default": skia_opts_deps(SKIA_CPU_OTHER),
   }),
