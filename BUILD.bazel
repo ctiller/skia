@@ -70,15 +70,73 @@ EXTERNAL_DEPS = [
   '@sfntly//:chrome_subsetter',
   '@libpng//:png',
   '@webp//:webp',
+  '@dng_sdk//:dng_sdk',
+  '@piex//:piex',
 ]
 
 cc_library(
     name = "opts_rest",
     srcs = select({
-        ":k8": skia_opts_deps(SKIA_CPU_X86),
+        ":k8": opts_rest_srcs(SKIA_CPU_X86),
         "//conditions:default": opts_rest_srcs(SKIA_CPU_OTHER),
     }) + skia_all_hdrs(),
     copts = base_copts(CONDITIONS),
+    defines = base_defines(CONDITIONS),
+    includes = INCLUDES,
+)
+
+cc_library(
+    name = "opts_sse2",
+    srcs = opts_srcs(SKIA_OPTS_SSE2) + skia_all_hdrs(),
+    copts = base_copts(CONDITIONS) + opts_cflags(SKIA_OPTS_SSE2),
+    defines = base_defines(CONDITIONS),
+    includes = INCLUDES,
+)
+
+cc_library(
+    name = "opts_ssse3",
+    srcs = opts_srcs(SKIA_OPTS_SSSE3) + skia_all_hdrs(),
+    copts = base_copts(CONDITIONS) + opts_cflags(SKIA_OPTS_SSSE3),
+    defines = base_defines(CONDITIONS),
+    includes = INCLUDES,
+)
+
+cc_library(
+    name = "opts_sse41",
+    srcs = opts_srcs(SKIA_OPTS_SSE41) + skia_all_hdrs(),
+    copts = base_copts(CONDITIONS) + opts_cflags(SKIA_OPTS_SSE41),
+    defines = base_defines(CONDITIONS),
+    includes = INCLUDES,
+)
+
+cc_library(
+    name = "opts_sse42",
+    srcs = opts_srcs(SKIA_OPTS_SSE42) + skia_all_hdrs(),
+    copts = base_copts(CONDITIONS) + opts_cflags(SKIA_OPTS_SSE42),
+    defines = base_defines(CONDITIONS),
+    includes = INCLUDES,
+)
+
+cc_library(
+    name = "opts_avx",
+    srcs = opts_srcs(SKIA_OPTS_AVX) + skia_all_hdrs(),
+    copts = base_copts(CONDITIONS) + opts_cflags(SKIA_OPTS_AVX),
+    defines = base_defines(CONDITIONS),
+    includes = INCLUDES,
+)
+
+cc_library(
+    name = "opts_neon",
+    srcs = opts_srcs(SKIA_OPTS_NEON) + skia_all_hdrs(),
+    copts = base_copts(CONDITIONS) + opts_cflags(SKIA_OPTS_NEON),
+    defines = base_defines(CONDITIONS),
+    includes = INCLUDES,
+)
+
+cc_library(
+    name = "opts_crc32",
+    srcs = opts_srcs(SKIA_OPTS_CRC32) + skia_all_hdrs(),
+    copts = base_copts(CONDITIONS) + opts_cflags(SKIA_OPTS_CRC32),
     defines = base_defines(CONDITIONS),
     includes = INCLUDES,
 )
@@ -94,7 +152,7 @@ cc_library(
 
 cc_library(
     name = "codec_all",
-    srcs = codec_srcs(False) + skia_all_hdrs(),
+    srcs = codec_srcs(False) + skia_all_hdrs() + glob(['third_party/gif/*.h']),
     copts = base_copts(CONDITIONS) + ["-fexceptions"],
     defines = base_defines(CONDITIONS),
     includes = INCLUDES,
