@@ -62,7 +62,7 @@ cc_library(
         # install guide to enforce explicit type in constructors.
         # But they break the tests shipped with the source code.
         'UNISTR_FROM_CHAR_EXPLICIT=explicit',
-        
+
         'UNISTR_FROM_STRING_EXPLICIT=',
 
         # Without -DU_HAVE_ELF_H=1, the tools/toolutil/pkg_genc.c will not
@@ -200,7 +200,7 @@ genrule(
 genrule(
     name = 'libicudata',
     srcs = [
-        'source/data/in/icudt59l.dat',
+        'source/data/in/icudt60l.dat',
         'icupkg.inc',
     ],
     tools = [
@@ -215,16 +215,16 @@ genrule(
         # The 'out' dircectory is a temporary directory.
         'mkdir -p out',
         'mkdir -p out/build',
-        'mkdir -p out/build/icudt59l',
-        'mkdir -p out/build/icudt59l/curr',
-        'mkdir -p out/build/icudt59l/lang',
-        'mkdir -p out/build/icudt59l/region',
-        'mkdir -p out/build/icudt59l/zone',
-        'mkdir -p out/build/icudt59l/unit',
-        'mkdir -p out/build/icudt59l/brkitr',
-        'mkdir -p out/build/icudt59l/coll',
-        'mkdir -p out/build/icudt59l/rbnf',
-        'mkdir -p out/build/icudt59l/translit',
+        'mkdir -p out/build/icudt60l',
+        'mkdir -p out/build/icudt60l/curr',
+        'mkdir -p out/build/icudt60l/lang',
+        'mkdir -p out/build/icudt60l/region',
+        'mkdir -p out/build/icudt60l/zone',
+        'mkdir -p out/build/icudt60l/unit',
+        'mkdir -p out/build/icudt60l/brkitr',
+        'mkdir -p out/build/icudt60l/coll',
+        'mkdir -p out/build/icudt60l/rbnf',
+        'mkdir -p out/build/icudt60l/translit',
         'mkdir -p out/tmp',
         'mkdir -p out/tmp/curr',
         'mkdir -p out/tmp/lang',
@@ -236,12 +236,12 @@ genrule(
         'mkdir -p out/tmp/translit',
         'mkdir -p out/tmp/brkitr',
         # Invoke icupkg to unpack the icu data.
-        '$(location :icupkg) -d out/build/icudt59l --list -x \* $(location source/data/in/icudt59l.dat) -o out/tmp/icudata.lst',
+        '$(location :icupkg) -d out/build/icudt60l --list -x \* $(location source/data/in/icudt60l.dat) -o out/tmp/icudata.lst',
         # Invoke pkgdata to package the unpacked icu data into c++ libraries
         # that can be linked against.
-        '$(location :pkgdata) -O $(location icupkg.inc) -q -c -s out/build/icudt59l -d out -e icudt59  -T out/tmp -p icudt59l -m static -r 59.1 -L icudata out/tmp/icudata.lst &> /dev/null',
+        '$(location :pkgdata) -O $(location icupkg.inc) -q -c -s out/build/icudt60l -d out -e icudt60  -T out/tmp -p icudt60l -m static -r 60.1 -L icudata out/tmp/icudata.lst &> /dev/null',
         'cp out/libicudata.a $(location libicudata.a)',
-        '$(location :pkgdata) -O $(location icupkg.inc) -q -c -s out/build/icudt59l -d out -e icudt59  -T out/tmp -p icudt59l -m dll -r 59.1 -L icudata out/tmp/icudata.lst &> /dev/null',
+        '$(location :pkgdata) -O $(location icupkg.inc) -q -c -s out/build/icudt60l -d out -e icudt60  -T out/tmp -p icudt60l -m dll -r 60.1 -L icudata out/tmp/icudata.lst &> /dev/null',
         # In MacOSX use .dylib; In Linux use .so.
         'if [ `uname` == "Linux" ]; then DYLIB=so; elif [ `uname` == "Darwin" ]; then DYLIB=dylib; fi',
         'cp -H out/libicudata.$$DYLIB $(location libicudata.so)',
