@@ -1,0 +1,146 @@
+# Copyright (c) 2011 Google Inc. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#    * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#    * Redistributions in binary form must reproduce the above
+# copyright notice, this list of conditions and the following disclaimer
+# in the documentation and/or other materials provided with the
+# distribution.
+#    * Neither the name of Google Inc. nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+load(
+  ":public.bzl",
+  "base_copts",
+  "base_defines",
+  "base_linkopts",
+  "codec_srcs",
+  "dm_srcs",
+  "opts_cflags",
+  "opts_rest_srcs",
+  "opts_srcs",
+  "skia_all_hdrs",
+  "skia_opts_deps",
+  "skia_public_hdrs",
+  "skia_select",
+  "skia_srcs",
+  # SKIA_OPTS_*
+  "SKIA_OPTS_SSE2",
+  "SKIA_OPTS_SSSE3",
+  "SKIA_OPTS_SSE41",
+  "SKIA_OPTS_SSE42",
+  "SKIA_OPTS_AVX",
+  "SKIA_OPTS_NEON",
+  "SKIA_OPTS_CRC32",
+  # SKIA_CPU_*
+  "SKIA_CPU_ARM",
+  "SKIA_CPU_ARM64",
+  "SKIA_CPU_X86",
+  "SKIA_CPU_OTHER",
+  # INCLUDES
+  "INCLUDES",
+  # DM_INCLUDES
+  "DM_INCLUDES",
+)
+
+CONDITIONS = ["//conditions:default", ":android", ":iphonesdk"]
+
+cc_library(
+    name = "opts_rest",
+    srcs = select({
+        ":k8": skia_opts_deps(SKIA_CPU_X86),
+        "//conditions:default": opts_rest_srcs(SKIA_CPU_OTHER),
+    }) + skia_all_hdrs(),
+    copts = base_copts(CONDITIONS),
+    defines = base_defines(CONDITIONS),
+    includes = INCLUDES,
+)
+
+cc_library(
+    name = "shader_includes",
+    textual_hdrs = glob(['src/sksl/*.include'])
+)
+
+cc_library(
+  name = "skia",
+  srcs = skia_srcs(CONDITIONS),
+  hdrs = skia_public_hdrs(),
+  copts = base_copts(CONDITIONS),
+  defines = base_defines(CONDITIONS),
+  includes = INCLUDES,
+  linkopts = base_linkopts(CONDITIONS),
+  visibility = [
+      "//visibility:public",
+  ],
+  deps = [
+    ':shader_includes',
+    '@jpeg//:jpeg',
+    '@freetype//:freetype',
+    '@fontconfig//:fontconfig_lib',
+    '@sfntly//:sfntly',
+    '@sfntly//:chrome_subsetter',
+    '@libpng//:png',
+    '@webp//:webp',
+  ] + select({
+        ":k8": skia_opts_deps(SKIA_CPU_X86),
+        "//conditions:default": skia_opts_deps(SKIA_CPU_OTHER),
+  }),
+  alwayslink = 1,
+)
+
+config_setting(
+    name = "k8",
+    values = {"cpu": "k8"},
+)
+
+config_setting(
+    name = "android",
+    values = {"crosstool_top": "//external:android/crosstool"},
+)
+
+config_setting(
+    name = "armeabi-v7a",
+    values = {"android_cpu": "armeabi-v7a"},
+)
+
+config_setting(
+    name = "arm64-v8a",
+    values = {"android_cpu": "arm64-v8a"},
+)
+
+config_setting(
+    name = "windows",
+    values = {"cpu": "x64_windows"},
+)
+
+config_setting(
+    name = "windows_msvc",
+    values = {"cpu": "x64_windows_msvc"},
+)
+
+config_setting(
+    name = "iphonesdk",
+    values = {"define": "IPHONE_SDK=1"},
+)
+
+config_setting(
+    name = "darwin",
+    values = {"cpu": "darwin"},
+)

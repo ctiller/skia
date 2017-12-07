@@ -2,23 +2,6 @@
 # Skylark macros
 ################################################################################
 
-is_bazel = not hasattr(native, "genmpm")
-
-def portable_select(select_dict, bazel_condition, default_condition):
-  """Replaces select() with a Bazel-friendly wrapper.
-
-  Args:
-    select_dict: Dictionary in the same format as select().
-  Returns:
-    If Blaze platform, returns select() using select_dict.
-    If Bazel platform, returns dependencies for condition
-        bazel_condition, or empty list if none specified.
-  """
-  if is_bazel:
-    return select_dict.get(bazel_condition, select_dict[default_condition])
-  else:
-    return select(select_dict)
-
 def skia_select(conditions, results):
   """Replaces select() for conditions [UNIX, ANDROID, IOS]
 
@@ -34,7 +17,7 @@ def skia_select(conditions, results):
   selector = {}
   for i in range(3):
     selector[conditions[i]] = results[i]
-  return portable_select(selector, conditions[2], conditions[0])
+  return select(selector)
 
 def skia_glob(srcs):
   """Replaces glob() with a version that accepts a struct.
@@ -628,7 +611,10 @@ def base_defines(os_conditions):
               "SKNX_NO_SIMD",
           ],
       ],
-  )
+  ) + select({
+      '//:darwin': ["SK_BUILD_FOR_MAC"],
+      '//conditions:default': []
+  })
 
 ################################################################################
 ## LINKOPTS
