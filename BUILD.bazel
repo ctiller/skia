@@ -78,7 +78,7 @@ cc_library(
     name = "opts_rest",
     srcs = select({
         ":k8": opts_rest_srcs(SKIA_CPU_X86),
-        ":darwin": skia_opts_deps(SKIA_CPU_X86),
+        ":darwin": opts_rest_srcs(SKIA_CPU_X86),
         "//conditions:default": opts_rest_srcs(SKIA_CPU_OTHER),
     }) + skia_all_hdrs(),
     copts = base_copts(CONDITIONS),
