@@ -168,7 +168,10 @@ cc_library(
   name = "skia",
   srcs = skia_srcs(CONDITIONS),
   hdrs = skia_public_hdrs(),
-  copts = base_copts(CONDITIONS),
+  copts = base_copts(CONDITIONS) + select({
+    ':darwin': '-DqMacOS',
+    '//conditions:default': '-DqLinux',
+  }),
   defines = base_defines(CONDITIONS),
   includes = INCLUDES,
   linkopts = base_linkopts(CONDITIONS),
