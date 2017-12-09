@@ -78,6 +78,7 @@ cc_library(
     name = "opts_rest",
     srcs = select({
         ":k8": opts_rest_srcs(SKIA_CPU_X86),
+        ":darwin": skia_opts_deps(SKIA_CPU_X86),
         "//conditions:default": opts_rest_srcs(SKIA_CPU_OTHER),
     }) + skia_all_hdrs(),
     copts = base_copts(CONDITIONS),
@@ -189,6 +190,7 @@ cc_library(
     ':codec_all',
   ] + EXTERNAL_DEPS + select({
         ":k8": skia_opts_deps(SKIA_CPU_X86),
+        ":darwin": skia_opts_deps(SKIA_CPU_X86),
         "//conditions:default": skia_opts_deps(SKIA_CPU_OTHER),
   }),
   alwayslink = 1,
