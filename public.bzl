@@ -613,6 +613,7 @@ def base_defines(os_conditions):
       ],
   ) + select({
       '//:darwin': ["SK_BUILD_FOR_MAC"],
+      '//:darwin_x86_64': ["SK_BUILD_FOR_MAC"],
       '//conditions:default': []
   })
 
