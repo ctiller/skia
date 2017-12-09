@@ -147,7 +147,7 @@ cc_library(
     copts = base_copts(CONDITIONS) + select({
       ':darwin': ['-DqMacOS'],
       '//conditions:default': ['-DqLinux'],
-    })
+    }),
     defines = base_defines(CONDITIONS),
     includes = INCLUDES,
     deps = EXTERNAL_DEPS,
@@ -159,7 +159,7 @@ cc_library(
     copts = base_copts(CONDITIONS) + ["-fexceptions"] + select({
       ':darwin': ['-DqMacOS'],
       '//conditions:default': ['-DqLinux'],
-    })
+    }),
     defines = base_defines(CONDITIONS),
     includes = INCLUDES,
     deps = EXTERNAL_DEPS,
