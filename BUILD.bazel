@@ -144,7 +144,10 @@ cc_library(
 cc_library(
     name = "codec_limited",
     srcs = codec_srcs(True) + skia_all_hdrs(),
-    copts = base_copts(CONDITIONS),
+    copts = base_copts(CONDITIONS) + select({
+      ':darwin': ['-DqMacOS'],
+      '//conditions:default': ['-DqLinux'],
+    })
     defines = base_defines(CONDITIONS),
     includes = INCLUDES,
     deps = EXTERNAL_DEPS,
@@ -153,7 +156,10 @@ cc_library(
 cc_library(
     name = "codec_all",
     srcs = codec_srcs(False) + skia_all_hdrs() + glob(['third_party/gif/*.h']),
-    copts = base_copts(CONDITIONS) + ["-fexceptions"],
+    copts = base_copts(CONDITIONS) + ["-fexceptions"] + select({
+      ':darwin': ['-DqMacOS'],
+      '//conditions:default': ['-DqLinux'],
+    })
     defines = base_defines(CONDITIONS),
     includes = INCLUDES,
     deps = EXTERNAL_DEPS,
