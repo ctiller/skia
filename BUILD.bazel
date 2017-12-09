@@ -79,6 +79,7 @@ cc_library(
     srcs = select({
         ":k8": opts_rest_srcs(SKIA_CPU_X86),
         ":darwin": opts_rest_srcs(SKIA_CPU_X86),
+        ":darwin_x86_64": opts_rest_srcs(SKIA_CPU_X86),
         "//conditions:default": opts_rest_srcs(SKIA_CPU_OTHER),
     }) + skia_all_hdrs(),
     copts = base_copts(CONDITIONS),
@@ -147,6 +148,7 @@ cc_library(
     srcs = codec_srcs(True) + skia_all_hdrs(),
     copts = base_copts(CONDITIONS) + select({
       ':darwin': ['-DqMacOS'],
+      ':darwin_x86_64': ['-DqMacOS'],
       '//conditions:default': ['-DqLinux'],
     }),
     defines = base_defines(CONDITIONS),
@@ -159,6 +161,7 @@ cc_library(
     srcs = codec_srcs(False) + skia_all_hdrs() + glob(['third_party/gif/*.h']),
     copts = base_copts(CONDITIONS) + ["-fexceptions"] + select({
       ':darwin': ['-DqMacOS'],
+      ':darwin_x86_64': ['-DqMacOS'],
       '//conditions:default': ['-DqLinux'],
     }),
     defines = base_defines(CONDITIONS),
@@ -177,6 +180,7 @@ cc_library(
   hdrs = skia_public_hdrs(),
   copts = base_copts(CONDITIONS) + select({
     ':darwin': ['-DqMacOS'],
+    ':darwin_x86_64': ['-DqMacOS'],
     '//conditions:default': ['-DqLinux'],
   }),
   defines = base_defines(CONDITIONS),
@@ -191,6 +195,7 @@ cc_library(
   ] + EXTERNAL_DEPS + select({
         ":k8": skia_opts_deps(SKIA_CPU_X86),
         ":darwin": skia_opts_deps(SKIA_CPU_X86),
+        ":darwin_x86_64": skia_opts_deps(SKIA_CPU_X86),
         "//conditions:default": skia_opts_deps(SKIA_CPU_OTHER),
   }),
   alwayslink = 1,
@@ -235,3 +240,9 @@ config_setting(
     name = "darwin",
     values = {"cpu": "darwin"},
 )
+
+config_setting(
+    name = "darwin_x86_64",
+    values = {"cpu": "darwin_x86_64"},
+)
+
