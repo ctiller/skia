@@ -259,7 +259,7 @@ def codec_srcs(limited):
 # Platform-dependent SRCS for google3-default platform.
 BASE_SRCS_UNIX = struct(
     include = [
-        #"src/gpu/gl/GrGLDefaultInterface_none.cpp",
+        "src/gpu/gl/GrGLDefaultInterface_native.cpp",
         "src/ports/**/*.cpp",
         "src/ports/**/*.h",
     ],
