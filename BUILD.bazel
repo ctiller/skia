@@ -198,7 +198,7 @@ cc_library(
     ':shader_includes',
     ':codec_all',
   ] + EXTERNAL_DEPS + select({
-        ":k8": skia_opts_deps(SKIA_CPU_X86),
+        ":k8": skia_opts_deps(SKIA_CPU_X86) + ['@mesa//:glxhdrs'],
         ":darwin": skia_opts_deps(SKIA_CPU_X86),
         ":darwin_x86_64": skia_opts_deps(SKIA_CPU_X86),
         "//conditions:default": skia_opts_deps(SKIA_CPU_OTHER),
