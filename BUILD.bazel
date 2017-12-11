@@ -177,9 +177,9 @@ cc_library(
 cc_library(
   name = "skia",
   srcs = skia_srcs(CONDITIONS) + select({
-    ":k8": glob(['src/gpu/gl/mac/*.cc']),
-    ":darwin": glob(['src/gpu/gl/mac/*.cc']),
-    ":darwin_x86_64": glob(['src/gpu/gl/mac/*.cc']),
+    ":k8": glob(['src/gpu/gl/mac/*.cpp']),
+    ":darwin": glob(['src/gpu/gl/mac/*.cpp']),
+    ":darwin_x86_64": glob(['src/gpu/gl/mac/*.cpp']),
     "//conditions:default": [],
   }),
   hdrs = skia_public_hdrs(),
